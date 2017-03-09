@@ -1,0 +1,132 @@
+#include"标头.h"
+void STACK::change()
+{
+	shuzu out;
+	out.in();
+	while (out.sum_in[i] != '\0')
+	{
+		switch (out.sum_in[i])
+		{
+		case'+':
+		case'-':if (!S1.empty())
+		{
+			if (S1.top() != '(')
+			{
+				out.sum_out[j++] = S1.top();
+				S1.pop();
+				S1.push(out.sum_in[i++]);
+			}
+			else
+			{
+				S1.push(out.sum_in[i++]);
+			}
+		}
+				else
+				{
+					S1.push(out.sum_in[i++]);
+				}
+				break;
+		case'*':
+		case'/':if (!S1.empty())
+		{
+			if (S1.top() == '*' || S1.top() == '/')
+			{
+				out.sum_out[j++] = S1.top();
+				S1.pop();
+				S1.push(out.sum_in[i++]);
+			}
+			else
+			{
+				S1.push(out.sum_in[i++]);
+			}
+		}
+				else
+				{
+					S1.push(out.sum_in[i++]);
+				}
+				break;
+		case'(':S1.push(out.sum_in[i++]); break;
+		case')':while (S1.top() != '(')
+					{
+						out.sum_out[j++] = S1.top();
+						S1.pop();
+					}
+				i++;
+				S1.pop();
+				break;
+		default:while (out.sum_in[i] >= '0'&&out.sum_in[i] <= '9')
+					{
+						out.sum_out[j++] = out.sum_in[i++];//数字存入后缀字符串中
+					}
+						out.sum_out[j] = ' ';
+						j++;
+						break;
+		}
+	}
+	while (!S1.empty())
+	{
+		out.sum_out[j++] = S1.top();
+		S1.pop();
+	}
+	cout << "后缀表达式:";
+	for (i = 0; i < j + 1; i++)
+	{
+		if (out.sum_out[i] == '(')
+		{
+			out.sum_out[i] = ' ';
+		}
+		cout << out.sum_out[i];
+	}
+	cout << endl;
+	out.calculate(out);
+}
+void shuzu::calculate(shuzu out)
+{
+	stack<double> S2;
+	double value;
+	for (int k = 0; k < j; k++)
+	{
+		if (out.sum_out[k] >= '0'&&out.sum_out[k] <= '9')
+		{
+			value = 0;
+			while (out.sum_out[k] != ' ')
+			{
+				value = value * 10 + out.sum_out[k++] - '0';//将数字化为整数
+			}
+			S2.push(value);
+		}
+		else
+		{
+			if (out.sum_out[k] != ' ')
+			{
+				double y = S2.top();
+				S2.pop();
+				double x = S2.top();
+				S2.pop();
+				switch (out.sum_out[k])
+				{
+				case'+':value = x + y; break;
+				case'-':value = x - y; break;
+				case'*':value = x * y; break;
+				case'/':value = x / y; break;
+				}
+				S2.push(value);
+			}
+		}
+	}
+	cout << "计算结果:" << S2.top();
+	cout << endl;
+}
+int main()
+{
+	STACK s;
+	if (s.empty())
+	{
+		s.change();
+	}
+	else
+	{
+		cout << "栈初始不为空";
+	}
+	return 0;
+}
